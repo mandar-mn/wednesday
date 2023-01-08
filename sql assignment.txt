@@ -1,0 +1,97 @@
+show databases;
+use example;
+show tables;
+create table person(
+personid int not null,
+firstname varchar (20),
+lastname varchar (20)
+);
+
+
+
+show databases;
+use example;
+show tables;
+create table person(
+personid int not null,
+firstname varchar (20),
+lastname varchar (20)
+);
+
+
+create table address (
+addid int not null,
+personid int not null,
+city varchar(25),
+state varchar(25));
+
+insert into person values (1,'mandar','ghaisas');
+insert into person values (2,'harshal','khare') , (3,'kartik','mane');
+insert into address values (1,2,'pune','mht'),(2,1,'ratnagiri','mht');
+
+select p.firstname,p.lastname ,a.city,a.state from person p left join address a on p.personid =a.personid; 
+
+create table person3 (
+id int not null,email varchar(50));
+
+insert into person3 values (1,'mandarghaisas21@gmail.com'),
+(2,'mandarghaisas21@gmail.com'),(3,'mandarghaisas.kh.dbda@gmail.com'),(4,'mandarghaisas.kh.dbda@gmail.com');
+
+select email ,count(email) from person3 group by email;
+select email,count(email) from person3 group by email having count(email)>1;
+
+create table employee (
+id int not null,
+name varchar(25),
+salary int,
+deptID int not null);
+
+insert into employee values (1,'mandar',50000,3),(2,'harshal',75000,3),(3,'parth',40000,1),(4,'roj',30000,1),(5,'manru',20000,2);
+select deptID,name,salary from employee group by deptID order by salary;
+
+create table department (
+id int not null,
+name varchar(20),
+primary key (id));
+
+create table employee2(id int,
+name varchar(25),
+salary int,
+departmentID int,
+primary key(id),
+foreign key(departmentID) references department(id));
+
+insert into department values(1,"IT"),
+(2,"Sales");
+select * from department;
+
+insert into employee2 values(1,"Joe",85000,1),
+(2,"Henry",80000,2),
+(3,"Sam",60000,2),
+(4,"Max",90000,1),
+(5,"Janet",69000,1),
+(6,"Randy",85000,1),
+(7,"Will",70000,1);
+
+select * from employee2;
+
+SELECT t.Department, t.Employee, t.Salary
+FROM (
+SELECT a.Name AS "Department"
+    , b.Name AS "Employee"
+    , b.Salary
+    , dense_rank() OVER(PARTITION BY a.Name ORDER BY b.Salary DESC) AS "rank"
+FROM department a
+LEFT JOIN employee2 b
+ON a.Id = b.DepartmentId
+) t
+WHERE t.rank <= 3 AND t.Salary IS NOT NULL;
+
+select a.name ,b.name,b.salary,b.departmentID ,dense_rank() over(partition by b.salary desc) as 'rank' from department a left join employee2 b
+on a.id=b.departmentID; 
+
+select * from employee2;
+select * from department;
+select * from employee2 e join department d on e.departmentID = d.id ; 
+select e.name,salary,d.name,rank() over(partition by d.name order by salary desc) as 'rank' from employee2 e 
+join department d on e.departmentID =d.id; 
